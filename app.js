@@ -20,6 +20,9 @@ let html5QrCode;
 let scanAktif = true;
 let flashAktif = false;
 
+const audioCtx =
+    new (window.AudioContext || window.webkitAudioContext)();
+
 // ===============================
 // LOGIN
 // ===============================
@@ -200,7 +203,7 @@ function tampilkanStatus(res){
     const status = document.getElementById("status");
 
     if(res.success){
-
+        beepSuccess();
         status.className = "success";
 
         status.innerHTML =
@@ -211,32 +214,34 @@ function tampilkanStatus(res){
 
         if(navigator.vibrate){
 
-            navigator.vibrate(200);
+            navigator.vibrate(150);
 
         }
 
     }
 
     else{
-
+        beepError();
         status.className = "error";
 
         if(res.type=="duplicate"){
 
             status.innerHTML="🔴 Sudah Hadir";
-
-        }
-
-        else{
+            
+    }else{
 
             status.innerHTML="❌ QR Tidak Valid";
 
         }
 
+        if(navigator.vibrate){
+
+            navigator.vibrate([100,80,100]);
+            
+        }
+
     }
-
 }
-
 // ===============================
 // DASHBOARD
 // ===============================
@@ -246,9 +251,7 @@ async function loadDashboard(){
     try{
 
         const res = await fetch(
-
             API_URL + "?action=dashboard"
-
         );
 
         const data = await res.json();
@@ -256,23 +259,88 @@ async function loadDashboard(){
         document.getElementById("hadir").innerHTML = data.hadir;
         document.getElementById("total").innerHTML = data.total;
 
-    }
-
         const persen =
-    data.total > 0
-        ? Math.round((data.hadir / data.total) * 100)
-        : 0;
+            data.total > 0
+                ? Math.round((data.hadir / data.total) * 100): 0;
 
-document.getElementById("progressBar").style.width =
-    persen + "%";
+        document.getElementById("progressBar").style.width = persen + "%";
+        document.getElementById("persen").innerHTML = persen + "%";
 
-document.getElementById("persen").innerHTML =
-    persen + "%";
-
+    }
     catch(err){
 
         console.log(err);
 
     }
+
+}
+
+
+
+
+
+// ===============================
+// BEEP
+// ===============================
+
+function beepSuccess(){
+
+    if(audioCtx.state === "suspended"){
+        audioCtx.resume();
+    }
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc.frequency.value = 900;
+    osc.type = "sine";
+
+    gain.gain.setValueAtTime(
+        0.3,
+        audioCtx.currentTime
+    );
+
+    osc.start();
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.00001,
+        audioCtx.currentTime + 0.15
+    );
+
+    osc.stop(audioCtx.currentTime + 0.15);
+
+}
+
+function beepError(){
+
+    if(audioCtx.state === "suspended"){
+        audioCtx.resume();
+    }
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc.frequency.value = 250;
+    osc.type = "square";
+
+    gain.gain.setValueAtTime(
+        0.3,
+        audioCtx.currentTime
+    );
+
+    osc.start();
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.00001,
+        audioCtx.currentTime + 0.30
+    );
+
+    osc.stop(audioCtx.currentTime + 0.30);
 
 }
