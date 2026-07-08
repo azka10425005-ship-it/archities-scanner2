@@ -253,13 +253,21 @@ async function loadDashboard(){
 
         const data = await res.json();
 
-        document.getElementById("hadir").innerHTML =
-        data.hadir;
-
-        document.getElementById("total").innerHTML =
-        data.total;
+        document.getElementById("hadir").innerHTML = data.hadir;
+        document.getElementById("total").innerHTML = data.total;
 
     }
+
+        const persen =
+    data.total > 0
+        ? Math.round((data.hadir / data.total) * 100)
+        : 0;
+
+document.getElementById("progressBar").style.width =
+    persen + "%";
+
+document.getElementById("persen").innerHTML =
+    persen + "%";
 
     catch(err){
 
