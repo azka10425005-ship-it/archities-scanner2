@@ -1,9 +1,10 @@
 const API_URL =
-"https://script.google.com/macros/s/AKfycbxj4MIGkkoV9qM_TSHTKrOG6znhld8aDLg0DaVi-XSx4AvzY6joFF8xdF8PyCt9KnE4/exec
-";
+"https://script.google.com/macros/s/AKfycbxj4MIGkkoV9qM_TSHTKrOG6znhld8aDLg0DaVi-XSx4AvzY6joFF8xdF8PyCt9KnE4/exec";
 
 async function loadDashboard(){
 
+    try{
+        
     const res = await fetch(
         API_URL + "?action=dashboard"
     );
@@ -30,6 +31,10 @@ async function loadDashboard(){
     document.getElementById("progressBar").style.width =
         persen + "%";
 
+}catch(err){
+
+    console.error("Dashboard Error:", err);
+    }
 }
 
 loadDashboard();
