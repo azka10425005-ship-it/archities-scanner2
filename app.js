@@ -8,7 +8,7 @@
 // ===============================
 
 const API_URL =
-"https://script.google.com/macros/s/AKfycbwDNdDqJ62mUaATDhB35CEjOUu_taJ0qTh0gPSVuUOIjsrPPP98fa6ZRF3GfQtx-9Oj/exec";
+"https://script.google.com/macros/s/AKfycbxj4MIGkkoV9qM_TSHTKrOG6znhld8aDLg0DaVi-XSx4AvzY6joFF8xdF8PyCt9KnE4/exec";
 
 const API_KEY = "ARCHITIES2026";
 
