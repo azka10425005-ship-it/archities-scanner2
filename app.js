@@ -153,41 +153,30 @@ async function onScanSuccess(decodedText) {
 
     scanAktif = false;
 
-    document.getElementById("status").className = "waiting";
-    document.getElementById("status").innerHTML = "Memeriksa...";
+    const status = document.getElementById("status");
+    status.className = "waiting";
+    status.innerHTML = "Memeriksa...";
 
     try {
 
-        const response = await fetch(API_URL, {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-
-                apiKey: API_KEY,
-                action: "checkin",
-                id: decodedText
-
-            })
-
-        });
+        const response = await fetch(
+            API_URL +
+            "?action=checkin&id=" +
+            encodeURIComponent(decodedText)
+        );
 
         const res = await response.json();
 
         tampilkanStatus(res);
 
-        loadDashboard();
+        await loadDashboard();
 
     } catch (err) {
 
-        console.log(err);
+        console.error(err);
 
-        document.getElementById("status").className = "error";
-        document.getElementById("status").innerHTML = "❌ Gagal terhubung ke server";
+        status.className = "error";
+        status.innerHTML = "❌ Gagal terhubung ke server";
 
     }
 
@@ -195,8 +184,8 @@ async function onScanSuccess(decodedText) {
 
         scanAktif = true;
 
-        document.getElementById("status").className = "waiting";
-        document.getElementById("status").innerHTML = "Menunggu Scan...";
+        status.className = "waiting";
+        status.innerHTML = "Menunggu Scan...";
 
     }, 2000);
 
